@@ -1,152 +1,218 @@
-// /app/api/explain/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 
-type Tema = 'Backend' | 'Frontend' | 'IA';
-type Nivel = 'iniciante' | 'intermediario';
+/* ================================
+   TIPOS
+================================ */
+type Nivel = 'iniciante' | 'intermediario' | 'avancado';
 
-interface Resposta {
-  textos: {
-    [key in Nivel]: string[];
-  };
+type Intencao =
+  | 'definicao'
+  | 'aprofundar'
+  | 'exemplo'
+  | 'exercicio'
+  | 'ensinar'
+  | 'confirmar'
+  | 'geral';
+
+interface ConteudoNivel {
+  definicao: string[];
+  aprofundamento: string[];
   exemplos: string[];
 }
 
-// Respostas por tema e nível
-const respostasPorTema: Record<Tema, Resposta> = {
-  Backend: {
-    textos: {
-      iniciante: [
-        'O Backend é como o motor de um carro: ele faz tudo funcionar por trás das cenas.',
-        'É a parte do sistema que processa dados e garante que tudo funcione corretamente.',
-        'Responsável por controlar o banco de dados e a lógica do sistema.'
-      ],
-      intermediario: [
-        'O Backend gerencia a lógica do servidor, comunicação com bancos de dados e APIs.',
-        'Responsável por processamento de dados, autenticação e autorização de usuários.',
-        'É a camada que conecta o Frontend aos dados e funcionalidades do sistema.'
-      ]
+interface Conteudo {
+  conteudo: Record<Nivel, ConteudoNivel>;
+  exercicios: any[];
+}
+
+/* ================================
+   MEMÓRIA
+================================ */
+let ultimoTopico: string | null = null;
+let profundidade = 0;
+let nivelAtual: Nivel = 'iniciante';
+
+/* === MODO APRENDIZADO === */
+let modoAprendizado: {
+  topico: string;
+  etapa: 'definicao' | 'aprofundamento' | 'exemplo';
+} | null = null;
+
+/* ================================
+   BASE FIXA
+================================ */
+const baseConhecimento: Record<string, Conteudo> = {
+  JavaScript: {
+    conteudo: {
+      iniciante: {
+        definicao: ['JavaScript deixa páginas web interativas.'],
+        aprofundamento: ['Reage a eventos do usuário.'],
+        exemplos: ['alert("Olá");']
+      },
+      intermediario: {
+        definicao: ['JavaScript é uma linguagem de programação web.'],
+        aprofundamento: ['Manipula DOM e consome APIs.'],
+        exemplos: ['fetch("/api")']
+      },
+      avancado: {
+        definicao: ['JavaScript é orientado a eventos e protótipos.'],
+        aprofundamento: ['Executa no browser e no Node.js.'],
+        exemplos: ['async/await']
+      }
     },
-    exemplos: [
-      'Ex.: APIs que conectam o banco de dados ao site.',
-      'Ex.: Servidores que processam pedidos de compra.',
-      'Ex.: Gerenciamento de usuários e autenticação.'
-    ]
-  },
-  Frontend: {
-    textos: {
-      iniciante: [
-        'O Frontend é o que o usuário vê e interage no site ou app.',
-        'É a interface com botões, telas e formulários.',
-        'Permite criar páginas e elementos visuais que o usuário utiliza diretamente.'
-      ],
-      intermediario: [
-        'O Frontend envolve o design de interfaces e experiência do usuário.',
-        'Responsável por comunicação com o Backend e renderização dinâmica de dados.',
-        'Inclui frameworks como React, Vue e Angular para criar aplicações interativas.'
-      ]
-    },
-    exemplos: [
-      'Ex.: Botões, menus e páginas do site.',
-      'Ex.: Formulários de login ou cadastro.',
-      'Ex.: Animações e efeitos visuais.'
-    ]
-  },
-  IA: {
-    textos: {
-      iniciante: [
-        'IA é tecnologia que aprende com dados e ajuda a tomar decisões.',
-        'É como ensinar o computador a pensar de forma inteligente.',
-        'Permite automatizar tarefas e resolver problemas complexos.'
-      ],
-      intermediario: [
-        'IA utiliza algoritmos de aprendizado de máquina para processar grandes volumes de dados.',
-        'Inclui tarefas como classificação, regressão, processamento de linguagem natural e visão computacional.',
-        'Permite criar sistemas que aprendem e se adaptam sem programação explícita para cada cenário.'
-      ]
-    },
-    exemplos: [
-      'Ex.: Chatbots que respondem perguntas automaticamente.',
-      'Ex.: Recomendação de produtos em lojas online.',
-      'Ex.: Análise de imagens ou reconhecimento de voz.'
-    ]
+    exercicios: []
   }
 };
 
-// Respostas específicas para termos/técnicas
-const respostasEspecificas: Record<string, string> = {
-  html: 'HTML é a linguagem de marcação usada para criar a estrutura de páginas web.',
-  css: 'CSS é usado para estilizar páginas web, definindo cores, fontes e layouts.',
-  javascript: 'JavaScript é a linguagem de programação usada para tornar páginas web interativas; pode ser usada tanto no Frontend quanto no Backend (Node.js).',
-  node: 'Node.js é um ambiente que permite rodar JavaScript no Backend, em servidores.',
-  react: 'React é um framework de JavaScript usado para criar interfaces de usuário interativas no Frontend.'
-};
+/* ================================
+   BASE DINÂMICA (APRENDIDA)
+================================ */
+const baseDinamica: Record<string, Conteudo> = {};
 
-// Função para pegar item aleatório de um array
-function aleatorio<T>(arr: T[]): T {
-  return arr[Math.floor(Math.random() * arr.length)];
+/* ================================
+   UTILIDADES
+================================ */
+function detectarIntencao(texto: string): Intencao {
+  if (texto === 'sim') return 'confirmar';
+  if (texto.includes('ensinar')) return 'ensinar';
+  if (texto.includes('explique mais')) return 'aprofundar';
+  if (texto.includes('exemplo')) return 'exemplo';
+  if (texto.includes('o que é')) return 'definicao';
+  return 'geral';
 }
 
-// Função para detectar tema com base na pergunta
-function detectarTema(pergunta: string): Tema {
-  const texto = pergunta.toLowerCase();
-
-  if (texto.includes('ia') || texto.includes('inteligência artificial') || texto.includes('machine learning')) {
-    return 'IA';
-  }
-
-  if (texto.includes('node') || texto.includes('servidor') || texto.includes('banco') || texto.includes('backend')) {
-    return 'Backend';
-  }
-
-  if (
-    texto.includes('javascript') ||
-    texto.includes('js') ||
-    texto.includes('html') ||
-    texto.includes('css') ||
-    texto.includes('frontend') ||
-    texto.includes('react')
-  ) {
-    return 'Frontend';
-  }
-
-  // Caso ambíguo, default para Frontend
-  return 'Frontend';
-}
-
+/* ================================
+   API
+================================ */
 export async function POST(req: NextRequest) {
   try {
-    const { pergunta, nivel } = await req.json() as { pergunta: string; nivel: Nivel };
+    const { pergunta } = await req.json();
+    const texto = pergunta.toLowerCase();
+    const intencao = detectarIntencao(texto);
 
-    // Verifica se a pergunta contém termo específico
-    const termoEspecifico = Object.keys(respostasEspecificas).find(tech =>
-      pergunta.toLowerCase().includes(tech)
-    );
+    /* ================================
+       FLUXO DE APRENDIZADO
+    ================================ */
+    if (modoAprendizado) {
+      const { topico, etapa } = modoAprendizado;
 
-    if (termoEspecifico) {
-      return NextResponse.json({ resposta: respostasEspecificas[termoEspecifico] });
+      if (!baseDinamica[topico]) {
+        baseDinamica[topico] = {
+          conteudo: {
+            iniciante: {
+              definicao: [],
+              aprofundamento: [],
+              exemplos: []
+            },
+            intermediario: {
+              definicao: [],
+              aprofundamento: [],
+              exemplos: []
+            },
+            avancado: {
+              definicao: [],
+              aprofundamento: [],
+              exemplos: []
+            }
+          },
+          exercicios: []
+        };
+      }
+
+      const base = baseDinamica[topico].conteudo.iniciante;
+
+      if (etapa === 'definicao') {
+        base.definicao.push(pergunta);
+        modoAprendizado.etapa = 'aprofundamento';
+        return NextResponse.json({
+          resposta: 'Perfeito! Agora me diga um aprofundamento.'
+        });
+      }
+
+      if (etapa === 'aprofundamento') {
+        base.aprofundamento.push(pergunta);
+        modoAprendizado.etapa = 'exemplo';
+        return NextResponse.json({
+          resposta: 'Ótimo! Agora me dê um exemplo.'
+        });
+      }
+
+      if (etapa === 'exemplo') {
+        base.exemplos.push(pergunta);
+        modoAprendizado = null;
+        return NextResponse.json({
+          resposta: 'Aprendido com sucesso! ✅ Já posso responder sobre esse tema.'
+        });
+      }
     }
 
-    // Detecta o tema da pergunta
-    const tema = detectarTema(pergunta);
-
-    if (!respostasPorTema[tema]) {
-      return NextResponse.json(
-        { erro: 'Tema não encontrado. Use: Backend, Frontend ou IA.' },
-        { status: 400 }
+    /* ================================
+       DETECÇÃO DE TEMA
+    ================================ */
+    const tema =
+      Object.keys(baseConhecimento).find(t =>
+        texto.includes(t.toLowerCase())
+      ) ||
+      Object.keys(baseDinamica).find(t =>
+        texto.includes(t.toLowerCase())
       );
+
+    if (!tema) {
+      const novoTema = pergunta.replace('o que é', '').trim();
+      modoAprendizado = {
+        topico: novoTema,
+        etapa: 'definicao'
+      };
+      return NextResponse.json({
+        resposta: `Ainda não conheço "${novoTema}". Você quer me ensinar?`
+      });
     }
 
-    const resposta = respostasPorTema[tema];
+    const base =
+      baseConhecimento[tema]?.conteudo[nivelAtual] ||
+      baseDinamica[tema]?.conteudo[nivelAtual];
 
-    // Seleciona texto baseado no nível e exemplo aleatório
-    const textosDoNivel = resposta.textos[nivel] || resposta.textos['iniciante'];
-    const textoEscolhido = aleatorio(textosDoNivel);
-    const exemploEscolhido = aleatorio(resposta.exemplos);
+    if (!base) {
+      return NextResponse.json({
+        resposta: 'Erro ao acessar o conteúdo.'
+      });
+    }
 
-    const respostaFinal = `${textoEscolhido} ${exemploEscolhido}`;
+    /* ================================
+       RESPOSTAS NORMAIS
+    ================================ */
+    if (intencao === 'definicao') {
+      profundidade = 0;
+      return NextResponse.json({
+        resposta: base.definicao[0]
+      });
+    }
 
-    return NextResponse.json({ resposta: respostaFinal });
-  } catch (error) {
-    return NextResponse.json({ erro: 'Erro ao processar a requisição.' }, { status: 500 });
+    if (intencao === 'aprofundar') {
+      const resp =
+        base.aprofundamento[profundidade] ||
+        'Quer um exemplo prático?';
+      profundidade++;
+      return NextResponse.json({ resposta: resp });
+    }
+
+    if (intencao === 'exemplo') {
+      return NextResponse.json({
+        resposta: base.exemplos[0]
+      });
+    }
+
+    return NextResponse.json({
+      resposta:
+        base.definicao[0] +
+        ' ' +
+        (base.aprofundamento[0] || '')
+    });
+
+  } catch {
+    return NextResponse.json(
+      { resposta: 'Erro interno.' },
+      { status: 500 }
+    );
   }
 }
