@@ -1,174 +1,202 @@
 # SimpleTech AI
-> Projeto educacional com **Next.js + TypeScript** que aplica **IA** para simplificar conteúdos técnicos — com foco em **usabilidade**, **produtividade** e evolução para o ecossistema **Microsoft Azure**.
 
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
-![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)
 ![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=nextdotjs&logoColor=white)
-![Build](https://img.shields.io/badge/build-GitHub%20Actions-lightgrey)
+![Supabase](https://img.shields.io/badge/Supabase-3.20-00C7B7?logo=supabase&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6-F7DF1E?logo=javascript&logoColor=black)
+
+**Descrição:**  
+SimpleTech AI é um projeto de bot inteligente que aprende sobre novos temas dinamicamente, armazenando informações em um banco de dados Supabase e respondendo perguntas de usuários de forma clara e objetiva. O projeto é ideal para explicar tecnologias de maneira simples, interativa e escalável.
 
 ---
 
 ## Índice
 
-- [Visão Geral](#visão-geral)
-- [Funcionalidades](#funcionalidades)
-- [Arquitetura](#arquitetura)
-- [Começando](#começando)
-  - [Pré-requisitos](#pré-requisitos)
-  - [Instalação](#instalação)
-  - [Execução (Dev)](#execução-dev)
-  - [Build (Prod)](#build-prod)
-- [Configuração](#configuração)
-- [Exemplos de Uso](#exemplos-de-uso)
-- #testes
-- [Estilo de Commits & Versionamento](#estilo-de-commits--versionamento)
-- [Roadmap](#roadmap)
-- [Contribuição](#contribuição)
-- [Boas Práticas & Segurança](#boas-práticas--segurança)
-- [Licença](#licença)
-- #contato
-- [Referências](#referências)
-
-----
-## Visão Geral
-O **SimpleTech AI** é um projeto educacional que demonstra como utilizar **Modelos de Linguagem** (LLMs) para **simplificar conteúdo técnico**, produzir resumos didáticos e apoiar o aprendizado. A base tecnológica é **Next.js + TypeScript**, com preparação para integrar **serviços de IA no Azure** (ex.: Azure OpenAI, Cognitive Services).
-
-**Por que usar?**
-- **Educacional:** mostra o passo a passo de uma aplicação prática de IA.
-- **Moderno:** usa o App Router do Next.js, TypeScript, testes e CI.
-- **Flexível:** arquitetura preparada para plugar provedores (Azure/OpenAI/HuggingFace).
+1. [Funcionalidades](#funcionalidades)  
+2. [Arquitetura do Projeto](#arquitetura-do-projeto)  
+3. [Tecnologias Utilizadas](#tecnologias-utilizadas)  
+4. [Estrutura do Banco de Dados](#estrutura-do-banco-de-dados)  
+5. [Instalação e Configuração](#instalacao-e-configuracao)  
+6. [Como Usar](#como-usar)  
+7. [Contribuição](#contribuicao)  
+8. [Licença](#licenca)  
 
 ---
+
 ## Funcionalidades
-- 🔎 **Resumo & simplificação:** transforma textos técnicos em versões mais acessíveis.
-- 🧠 **Agentes de fluxo (MVP):** pipeline simples *plan → execute → refine*.
-- 🔌 **Integração Azure (planejada):** Azure OpenAI / Cognitive Services / Storage.
-- 🛡️ **Privacidade & controle:** variáveis de ambiente, logs configuráveis.
+
+- Aprendizado dinâmico de novos temas pelo bot  
+- Armazenamento de temas e informações no Supabase  
+- Busca de informações por tema para responder perguntas dos usuários  
+- Estrutura escalável para adicionar novas funcionalidades futuramente  
 
 ---
 
-## Arquitetura
-```
-simpletech-ai/
-├─ src/
-│  ├─ app/               # Rotas (App Router do Next.js)
-│  │  ├─ page.tsx        # Página principal
-│  │  └─ api/            # Handlers de API (ex.: /api/simplify)
-│  ├─ components/        # Componentes de UI
-│  ├─ lib/               # Serviços/clients (ex.: Azure/OpenAI)
-│  ├─ styles/            # Estilos
-│  └─ types/             # Tipos/DTOs
-├─ public/               # Assets estáticos
-├─ tests/                # Testes unitários/integração
-├─ .env.example          # Modelo de variáveis de ambiente
-├─ package.json
+## Arquitetura do Projeto
+
+````
+SimpleTech AI
+│
+├─ backend/
+│   ├─ supabaseClient.js       # Configuração do Supabase
+│   ├─ temas.js                # Funções para gerenciar temas
+│   └─ informacoes.js          # Funções para gerenciar informações
+│
+├─ frontend/
+│   ├─ pages/                  # Páginas do bot ou interface web
+│   └─ components/             # Componentes de interface
+│
 └─ README.md
-````
----
-
-## Começando
-
-### Pré-requisitos
-- **Node.js ≥ 18**
-- **pnpm** (recomendado) ou **npm**
-- (Opcional) **Docker 24+**
-
-### Instalação
-```bash
-git clone https://github.com/jfcampos5/simpletech-ai.git
-cd simpletech-ai
-pnpm install
-````
-----
-pnpm dev
-Acesse: http://localhost:3000
-
-Build (Prod)
-
-pnpm build && pnpm start
-
-----
-### Configuração
-Crie .env.local:
-````
-AZURE_OPENAI_ENDPOINT=https://<seu-endpoint>.openai.azure.com/
-AZURE_OPENAI_API_KEY=<sua-chave>
-AZURE_OPENAI_DEPLOYMENT_NAME=<nome-do-deployment>
-AZURE_OPENAI_API_VERSION=2024-10-01-preview
-NEXT_PUBLIC_APP_NAME=SimpleTech AI
-LOG_LEVEL=info
-````
-----
-### Exemplos de Uso
-API — simplificação de texto técnico
-````
-POST /api/simplify
-Content-Type: application/json
-
-{
-  "text": "Especificação do protocolo TLS 1.3...",
-  "style": "didático"
-}
 `````
-Resposta:
 
-{ "summary": "Explica o TLS 1.3 passo a passo...", "tokens": 1024 }
 
 ---
 
-### ✅ **Parte 4 — Testes, Commits, Roadmap e Licença**
-```markdown
-## Testes
+## Tecnologias Utilizadas
+
+- **Node.js / Next.js** → Backend e frontend do bot  
+- **Supabase** → Banco de dados e API REST para armazenar temas e informações  
+- **JavaScript** → Lógica do bot e integração com a Supabase  
+
+---
+
+## Fluxo de Dados (Visão Geral)
+
+<img width="600" height="800" alt="diagrama_fluxo" src="https://github.com/user-attachments/assets/5c6a0035-ceec-472d-a06f-d5b9abe5ad41" />
+
+1. **Usuário:** Pode ensinar novos temas ao bot (aprendizado) ou fazer perguntas sobre temas já conhecidos (consulta).  
+2. **Bot:** Processa as entradas do usuário.  
+   - Para ensinar um novo tema → bot insere o tema e suas informações no banco de dados Supabase.  
+   - Para consultar informações → bot busca dados no Supabase e responde ao usuário.  
+3. **Supabase:** Armazena dados e retorna informações ao bot para que ele responda ao usuário.
+
+---
+
+## Estrutura do Banco de Dados
+
+### Tabela: `temas`
+
+| Coluna      | Tipo      | Descrição |
+|------------|-----------|-----------|
+| `id`       | UUID      | Identificador único do tema |
+| `nome`     | text      | Nome do tema (ex: “JavaScript”) |
+| `descricao`| text      | Breve descrição do tema |
+| `criado_em`| timestamp | Data de criação do tema |
+
+### Tabela: `informacoes`
+
+| Coluna     | Tipo      | Descrição |
+|-----------|-----------|-----------|
+| `id`      | UUID      | Identificador único da informação |
+| `tema_id` | UUID      | Referência ao tema correspondente (`temas.id`) |
+| `conteudo`| text      | Conteúdo ou resposta sobre o tema |
+| `criado_em`| timestamp| Data de criação da informação |
+
+---
+
+## Instalação e Configuração
+
+1. **Clonar o projeto**
 ```bash
-pnpm test
-pnpm test:coverage
+git clone https://github.com/seuusuario/simpletech-ai.git
+cd simpletech-ai
+````
+
+----
+
+## Estrutura do Banco de Dados
+
+```
+| Coluna      | Tipo      | Descrição                       |
+| ----------- | --------- | ------------------------------- |
+| `id`        | UUID      | Identificador único do tema     |
+| `nome`      | text      | Nome do tema (ex: “JavaScript”) |
+| `descricao` | text      | Breve descrição do tema         |
+| `criado_em` | timestamp | Data de criação do tema         |
 ````
 ----
-Estilo de Commits & Versionamento
-Usamos Conventional Commits:
-
-feat(api): adicionar endpoint
-fix(ui): corrigir bug
-docs(readme): atualizar instruções
-
-----
-###Roadmap
-
- Integração Azure OpenAI
- Módulo “Explain Like I’m 5”
- Exportação PDF/Docx
- Painel de auditoria/logs
- Testes E2E (Playwright)
-
-----
-###Contribuição
-
-Fork
-Branch: git checkout -b feat/minha-ideia
-Commits padronizados
-PR com descrição clara
-
+### Tabela: informacoes
+```
+| Coluna      | Tipo      | Descrição                                      |
+| ----------- | --------- | ---------------------------------------------- |
+| `id`        | UUID      | Identificador único da informação              |
+| `tema_id`   | UUID      | Referência ao tema correspondente (`temas.id`) |
+| `conteudo`  | text      | Conteúdo ou resposta sobre o tema              |
+| `criado_em` | timestamp | Data de criação da informação                  |
+````
 ----
 
-###Licença
-MIT — veja LICENSE.
+### Instalação e Configuração
+
+1 - Clonar o projeto
+```
+git clone https://github.com/seuusuario/simpletech-ai.git
+cd simpletech-ai
+````
+2 - Instalar dependências
+```
+npm install
+````
+3 - Configurar Supabase
+
+* Criar um projeto no Supabase
+
+* Criar as tabelas temas e informacoes conforme a estrutura acima
+
+* Criar o arquivo supabaseClient.js com a URL e chave anônima do Supabase:
+```
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = 'SUA_SUPABASE_URL';
+const supabaseKey = 'SUA_SUPABASE_ANON_KEY';
+
+export const supabase = createClient(supabaseUrl, supabaseKey);
+````
+4 - Executar o projeto
+```
+npm run dev
+```
+----
+### Como Usar
+
+1 - Inserir novos temas:
+```
+await adicionarTema("JavaScript", "Linguagem de programação usada em sites");
+````
+2 - Adicionar informações a um tema:
+```
+await adicionarInformacao(tema_id, "JavaScript é usado para criar páginas interativas.");
+````
+3 - Buscar informações de um tema:
+```
+const dados = await buscarInformacoes(tema_id);
+console.log(dados);
+````
+4 - Integrar ao bot para responder perguntas dinamicamente com base nos dados armazenados.
 
 ----
-###Contato
+## Contribuição
+
+Contribuições são bem-vindas!
+
+* Faça um fork do projeto
+
+* Crie uma branch (git checkout -b feature/nova-funcionalidade)
+
+* Faça commit das alterações (git commit -m 'Adiciona nova funcionalidade')
+
+* Envie o pull request (git push origin feature/nova-funcionalidade)
+
+---
+## Contato
 
 Joelma Campos
 
-Issues: https://github.com/jfcampos5/simpletech-ai/issues
+Issues: https://github.com/jfcampos5/simpletech-ai/
 
-----
+---
+## Licença
 
-###Referências
+Este projeto está licenciado sob a MIT License.
 
-GitHub Docs — About READMEs
-
-Conventional Commits
-
-
-
-
+---
