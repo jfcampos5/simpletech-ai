@@ -1,36 +1,174 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SimpleTech AI
+> Projeto educacional com **Next.js + TypeScript** que aplica **IA** para simplificar conteúdos técnicos — com foco em **usabilidade**, **produtividade** e evolução para o ecossistema **Microsoft Azure**.
 
-## Getting Started
+![License](https://img.shields.io/badge/License-MIT-blue.svg)
+![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)
+![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=nextdotjs&logoColor=white)
+![Build](https://img.shields.io/badge/build-GitHub%20Actions-lightgrey)
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Índice
+
+- [Visão Geral](#visão-geral)
+- [Funcionalidades](#funcionalidades)
+- [Arquitetura](#arquitetura)
+- [Começando](#começando)
+  - [Pré-requisitos](#pré-requisitos)
+  - [Instalação](#instalação)
+  - [Execução (Dev)](#execução-dev)
+  - [Build (Prod)](#build-prod)
+- [Configuração](#configuração)
+- [Exemplos de Uso](#exemplos-de-uso)
+- #testes
+- [Estilo de Commits & Versionamento](#estilo-de-commits--versionamento)
+- [Roadmap](#roadmap)
+- [Contribuição](#contribuição)
+- [Boas Práticas & Segurança](#boas-práticas--segurança)
+- [Licença](#licença)
+- #contato
+- [Referências](#referências)
+
+----
+## Visão Geral
+O **SimpleTech AI** é um projeto educacional que demonstra como utilizar **Modelos de Linguagem** (LLMs) para **simplificar conteúdo técnico**, produzir resumos didáticos e apoiar o aprendizado. A base tecnológica é **Next.js + TypeScript**, com preparação para integrar **serviços de IA no Azure** (ex.: Azure OpenAI, Cognitive Services).
+
+**Por que usar?**
+- **Educacional:** mostra o passo a passo de uma aplicação prática de IA.
+- **Moderno:** usa o App Router do Next.js, TypeScript, testes e CI.
+- **Flexível:** arquitetura preparada para plugar provedores (Azure/OpenAI/HuggingFace).
+
+---
+## Funcionalidades
+- 🔎 **Resumo & simplificação:** transforma textos técnicos em versões mais acessíveis.
+- 🧠 **Agentes de fluxo (MVP):** pipeline simples *plan → execute → refine*.
+- 🔌 **Integração Azure (planejada):** Azure OpenAI / Cognitive Services / Storage.
+- 🛡️ **Privacidade & controle:** variáveis de ambiente, logs configuráveis.
+
+---
+
+## Arquitetura
 ```
+simpletech-ai/
+├─ src/
+│  ├─ app/               # Rotas (App Router do Next.js)
+│  │  ├─ page.tsx        # Página principal
+│  │  └─ api/            # Handlers de API (ex.: /api/simplify)
+│  ├─ components/        # Componentes de UI
+│  ├─ lib/               # Serviços/clients (ex.: Azure/OpenAI)
+│  ├─ styles/            # Estilos
+│  └─ types/             # Tipos/DTOs
+├─ public/               # Assets estáticos
+├─ tests/                # Testes unitários/integração
+├─ .env.example          # Modelo de variáveis de ambiente
+├─ package.json
+└─ README.md
+````
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Começando
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Pré-requisitos
+- **Node.js ≥ 18**
+- **pnpm** (recomendado) ou **npm**
+- (Opcional) **Docker 24+**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Instalação
+```bash
+git clone https://github.com/jfcampos5/simpletech-ai.git
+cd simpletech-ai
+pnpm install
+````
+----
+pnpm dev
+Acesse: http://localhost:3000
 
-## Learn More
+Build (Prod)
 
-To learn more about Next.js, take a look at the following resources:
+pnpm build && pnpm start
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+----
+### Configuração
+Crie .env.local:
+````
+AZURE_OPENAI_ENDPOINT=https://<seu-endpoint>.openai.azure.com/
+AZURE_OPENAI_API_KEY=<sua-chave>
+AZURE_OPENAI_DEPLOYMENT_NAME=<nome-do-deployment>
+AZURE_OPENAI_API_VERSION=2024-10-01-preview
+NEXT_PUBLIC_APP_NAME=SimpleTech AI
+LOG_LEVEL=info
+````
+----
+### Exemplos de Uso
+API — simplificação de texto técnico
+````
+POST /api/simplify
+Content-Type: application/json
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+{
+  "text": "Especificação do protocolo TLS 1.3...",
+  "style": "didático"
+}
+`````
+Resposta:
 
-## Deploy on Vercel
+{ "summary": "Explica o TLS 1.3 passo a passo...", "tokens": 1024 }
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### ✅ **Parte 4 — Testes, Commits, Roadmap e Licença**
+```markdown
+## Testes
+```bash
+pnpm test
+pnpm test:coverage
+````
+----
+Estilo de Commits & Versionamento
+Usamos Conventional Commits:
+
+feat(api): adicionar endpoint
+fix(ui): corrigir bug
+docs(readme): atualizar instruções
+
+----
+###Roadmap
+
+ Integração Azure OpenAI
+ Módulo “Explain Like I’m 5”
+ Exportação PDF/Docx
+ Painel de auditoria/logs
+ Testes E2E (Playwright)
+
+----
+###Contribuição
+
+Fork
+Branch: git checkout -b feat/minha-ideia
+Commits padronizados
+PR com descrição clara
+
+----
+
+###Licença
+MIT — veja LICENSE.
+
+----
+###Contato
+
+Joelma Campos
+
+Issues: https://github.com/jfcampos5/simpletech-ai/issues
+
+----
+
+###Referências
+
+GitHub Docs — About READMEs
+
+Conventional Commits
+
+
+
+
