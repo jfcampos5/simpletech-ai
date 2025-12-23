@@ -5,30 +5,62 @@
 ![Supabase](https://img.shields.io/badge/Supabase-3.20-00C7B7?logo=supabase&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6-F7DF1E?logo=javascript&logoColor=black)
 
-**Descrição:**  
-SimpleTech AI é um projeto de bot inteligente que aprende sobre novos temas dinamicamente, armazenando informações em um banco de dados Supabase e respondendo perguntas de usuários de forma clara e objetiva. O projeto é ideal para explicar tecnologias de maneira simples, interativa e escalável.
+---
+
+## Status do Projeto
+
+Este projeto está em **desenvolvimento ativo** 🚀  
+
+Isso significa que:
+- Funcionalidades podem mudar, ser adicionadas ou removidas  
+- A estrutura pode evoluir conforme o projeto cresce  
+- Feedbacks e sugestões são altamente bem-vindos  
+
+> ⚠️ **Observação:** Não é recomendado usar este projeto em produção neste momento.
+
+---
+
+## Descrição
+
+**SimpleTech AI** é um projeto de bot inteligente que aprende sobre novos temas dinamicamente, armazenando informações em um banco de dados Supabase e respondendo perguntas de usuários de forma clara e objetiva.
+
+O objetivo do projeto é explicar tecnologias de maneira simples, interativa e escalável.
+
+---
 
 ---
 
 ## Índice
 
-1. [Funcionalidades](#funcionalidades)  
-2. [Arquitetura do Projeto](#arquitetura-do-projeto)  
-3. [Tecnologias Utilizadas](#tecnologias-utilizadas)  
-4. [Estrutura do Banco de Dados](#estrutura-do-banco-de-dados)  
-5. [Instalação e Configuração](#instalacao-e-configuracao)  
-6. [Como Usar](#como-usar)  
-7. [Contribuição](#contribuicao)  
-8. [Licença](#licenca)  
+1. [Status do Projeto](#status-do-projeto)
+2. [Descrição](#descricao)
+3. [Funcionalidades](#funcionalidades)  
+4. [Arquitetura do Projeto](#arquitetura-do-projeto)  
+5. [Tecnologias Utilizadas](#tecnologias-utilizadas)
+6. [Fluxo de Dados (Visão Geral)](#fluxo-de-dados-visao-geral)
+7. [Estrutura do Banco de Dados 1](#estrutura-do-banco-de-dados)
+8. [Estrutura do Banco de Dados 2](#estrutura-do-banco-de-dados-2)
+9. [Instalação e Configuração](#instalacao-e-configuracao)  
+10. [Como Usar](#como-usar)
+11. [Feature Requests](#feature-requests)
+12. [Contribuição](#contribuicao)
+13. [Contato](#contato)
+14. [Suporte e Issues](#suporte-e-issues)
+15. [Licença](#licenca)  
+
+---
 
 ---
 
 ## Funcionalidades
 
-- Aprendizado dinâmico de novos temas pelo bot  
-- Armazenamento de temas e informações no Supabase  
+- Aprendizado dinâmico de novos temas  
+- Armazenamento de dados no Supabase  
+- Consulta inteligente por tema  
+- Arquitetura escalável  
+- Base preparada para evolução futura (quase IA)
 - Busca de informações por tema para responder perguntas dos usuários  
-- Estrutura escalável para adicionar novas funcionalidades futuramente  
+- Estrutura escalável para adicionar novas funcionalidades futuramente
 
 ---
 
@@ -72,9 +104,9 @@ SimpleTech AI
 
 ---
 
-## Estrutura do Banco de Dados
+## Estrutura do Banco de Dados 1
 
-### Tabela: `temas`
+Tabela: `temas`
 
 | Coluna      | Tipo      | Descrição |
 |------------|-----------|-----------|
@@ -83,7 +115,7 @@ SimpleTech AI
 | `descricao`| text      | Breve descrição do tema |
 | `criado_em`| timestamp | Data de criação do tema |
 
-### Tabela: `informacoes`
+Tabela: `informações`
 
 | Coluna     | Tipo      | Descrição |
 |-----------|-----------|-----------|
@@ -104,7 +136,7 @@ cd simpletech-ai
 
 ----
 
-## Estrutura do Banco de Dados
+## Estrutura do Banco de Dados 2
 
 ```
 | Coluna      | Tipo      | Descrição                       |
@@ -115,7 +147,9 @@ cd simpletech-ai
 | `criado_em` | timestamp | Data de criação do tema         |
 ````
 ----
-### Tabela: informacoes
+
+## Tabela: informacoes
+
 ```
 | Coluna      | Tipo      | Descrição                                      |
 | ----------- | --------- | ---------------------------------------------- |
@@ -126,7 +160,7 @@ cd simpletech-ai
 ````
 ----
 
-### Instalação e Configuração
+## Instalação e Configuração
 
 1 - Clonar o projeto
 ```
@@ -157,7 +191,8 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 npm run dev
 ```
 ----
-### Como Usar
+
+## Como Usar
 
 1 - Inserir novos temas:
 ```
@@ -175,6 +210,18 @@ console.log(dados);
 4 - Integrar ao bot para responder perguntas dinamicamente com base nos dados armazenados.
 
 ----
+
+## Feature Requests
+
+Quer sugerir uma nova funcionalidade ou melhoria?
+
+Utilize o template de Feature Request disponível nas Issues do projeto.
+Isso ajuda a manter as sugestões organizadas e facilita a avaliação.
+
+👉 [Criar Feature Request](https://github.com/jfcampos5/simpletech-ai/issues/new/choose)
+
+----
+
 ## Contribuição
 
 Contribuições são bem-vindas!
@@ -188,13 +235,24 @@ Contribuições são bem-vindas!
 * Envie o pull request (git push origin feature/nova-funcionalidade)
 
 ---
+
 ## Contato
 
 Joelma Campos
 
-Issues: https://github.com/jfcampos5/simpletech-ai/
+[LinkedIn](https://www.linkedin.com/in/joelma-campos-50a7277b/)
 
 ---
+
+## Suporte e Issues
+
+Encontrou um problema ou tem uma sugestão?  
+Abra uma issue no GitHub:
+
+👉 [Issues do projeto](https://github.com/jfcampos5/simpletech-ai/issues)
+
+---
+
 ## Licença
 
 Este projeto está licenciado sob a MIT License.
